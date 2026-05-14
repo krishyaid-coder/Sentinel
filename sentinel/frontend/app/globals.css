@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+/* Enable `dark:` utilities when `class="dark"` is on a parent (typically <html>). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-background: #050506;
+  --color-foreground: #f4f4f5;
+  --color-muted: #9ca3af;
+  --color-muted-foreground: #71717a;
+  --color-card: #0c0d10;
+  --color-card-elevated: #14151a;
+  --color-border: color-mix(in oklab, var(--color-foreground) 9%, transparent);
+  --color-border-strong: color-mix(in oklab, var(--color-foreground) 16%, transparent);
+  /* Indigo for in-app UI */
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-muted: color-mix(in oklab, #6366f1 22%, transparent);
+  --color-cyan-glow: #22d3ee;
+  /* Marketing / hero warmth (portfolio-style accent) */
+  --color-warm: #fbbf24;
+  --color-warm-deep: #f97316;
+  --color-warm-glow: color-mix(in oklab, #fb923c 45%, transparent);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background-color: transparent;
+  color: var(--color-foreground);
+}
+
+/* ─── Landing / hero atmosphere ─────────────────────────────────── */
+.bg-landing-mesh {
+  background-color: #030304;
+  background-image:
+    radial-gradient(ellipse 90% 70% at 88% 8%, rgba(251, 146, 60, 0.22), transparent 58%),
+    radial-gradient(ellipse 70% 55% at 8% 25%, rgba(99, 102, 241, 0.14), transparent 52%),
+    radial-gradient(ellipse 65% 45% at 50% 95%, rgba(251, 191, 36, 0.1), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 70% 60%, rgba(244, 63, 94, 0.06), transparent 45%);
+}
+
+.bg-grid-faint {
+  background-image:
+    linear-gradient(color-mix(in oklab, white 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, white 5%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 40%, black 15%, transparent 70%);
+}
+
+/* Legacy hero (in-app); prefer bg-landing-mesh globally */
+.bg-hero-glow {
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -20%, color-mix(in oklab, var(--color-accent) 28%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, color-mix(in oklab, var(--color-cyan-glow) 12%, transparent), transparent 45%),
+    radial-gradient(ellipse 50% 35% at 0% 20%, color-mix(in oklab, var(--color-accent) 15%, transparent), transparent 50%);
+}
+
+/* Glassmorphism panels */
+.glass-edge {
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+    0 32px 64px -16px rgb(0 0 0 / 0.65);
+}
+
+.glass-panel {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, white 10%, transparent);
+  background: color-mix(in oklab, white 5%, transparent);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+
+.glass-panel-strong {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, white 14%, transparent);
+  background: color-mix(in oklab, white 7%, transparent);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+/* In-app surfaces (same spectrum as landing) */
+.glass-card {
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, white 9%, transparent);
+  background: color-mix(in oklab, white 4%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.glass-card:hover {
+  border-color: color-mix(in oklab, white 14%, transparent);
+  background: color-mix(in oklab, white 6%, transparent);
+}
+
+.glass-section {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, white 10%, transparent);
+  background: color-mix(in oklab, white 5%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glass-nested {
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in oklab, white 6%, transparent);
+  background: color-mix(in oklab, black 35%, transparent);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.glass-nested:hover {
+  border-color: color-mix(in oklab, white 11%, transparent);
+  background: color-mix(in oklab, black 25%, transparent);
+}
+
+.btn-warm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(to right, #fbbf24, #f97316);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0a0a0a;
+  box-shadow: 0 10px 40px -10px color-mix(in oklab, #f97316 45%, transparent);
+  transition: filter 0.15s ease;
+}
+
+.btn-warm:hover {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in oklab, white 12%, transparent);
+  background: color-mix(in oklab, white 5%, transparent);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fafafa;
+  backdrop-filter: blur(12px);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: color-mix(in oklab, white 9%, transparent);
+  border-color: color-mix(in oklab, white 18%, transparent);
+}
