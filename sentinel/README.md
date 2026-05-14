@@ -48,7 +48,7 @@ Every upload triggers a sequential, collaborative pipeline. Each agent has a dis
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                         USER INPUT                                    │
+│                         USER INPUT                                   │
 │   CSV · Excel · PDF · PNG/JPEG (screenshot) · JSON · pasted text     │
 └──────────────────────────────┬───────────────────────────────────────┘
                                │
@@ -71,7 +71,7 @@ Every upload triggers a sequential, collaborative pipeline. Each agent has a dis
 │  • Runs deep root cause analysis on each anomaly                     │
 │  • Cross-correlates with all other metrics in context                │
 │  • Assesses business impact and urgency                              │
-│  • Identifies recommended owner (VP Sales, CTO, COO …)              │
+│  • Identifies recommended owner (VP Sales, CTO, COO …)               │
 │  • If multiple anomalies: finds shared root causes across them       │
 │                                                                      │
 │  Output → root_cause, correlated_metrics, urgency, analysis_summary  │
@@ -124,8 +124,8 @@ Every agent step is persisted to the database in real time and streamed to the *
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **AI — fast tier** | Gemini 2.5 Flash | Monitor Agent, Action Agent (low latency) |
-| **AI — reasoning tier** | Gemini 2.5 Pro | Analyst Agent, Briefing Agent (deep reasoning) |
+| **AI: fast tier** | Gemini 2.5 Flash | Monitor Agent, Action Agent (low latency) |
+| **AI: reasoning tier** | Gemini 2.5 Pro | Analyst Agent, Briefing Agent (deep reasoning) |
 | **Backend** | Python 3.11 + FastAPI | Async REST API, agent orchestration |
 | **Scheduler** | APScheduler | Periodic background monitoring jobs |
 | **Database** | SQLite + SQLAlchemy (async) | Dev; swap `DATABASE_URL` for PostgreSQL in prod |
@@ -382,21 +382,21 @@ All endpoints return JSON. Interactive docs available at `/docs`.
 
 ## Demo Walkthrough
 
-### Scenario 1 — Support ticket spike
+### Scenario 1: Support ticket spike
 1. Upload `demo_data/support_tickets.csv` (15 days of support data)
 2. The Monitor Agent detects: ticket volume +120%, CSAT -44%, resolution time +312%
 3. The Analyst Agent diagnoses: "Spike correlates with product update on April 23 — likely a regression causing repeat contacts"
 4. The Action Agent drafts: escalation to VP Support, engineering task for regression triage, customer communication
 5. The Briefing Agent writes the executive summary
 
-### Scenario 2 — Sales pipeline collapse
+### Scenario 2: Sales pipeline collapse
 1. Upload `demo_data/sales_pipeline.csv` (10 weeks of sales data)
 2. Monitor Agent detects: win rate dropped from 81% → 17%, deal velocity slowed from 31 → 74 days
 3. Analyst Agent: "14 enterprise deals stalled in legal review — systematic blocker, not performance issue"
 4. Action Agent: escalation to CRO + proposal for dedicated legal resources
 5. Briefing Agent: board-level narrative with recommended decisions
 
-### Scenario 3 — Dashboard screenshot (multimodal)
+### Scenario 3: Dashboard screenshot (multimodal)
 1. Take a screenshot of any Salesforce / HubSpot / Looker dashboard
 2. Upload as PNG to Sentinel
 3. Gemini Flash reads the image directly — no OCR needed — and extracts visible KPIs
@@ -419,7 +419,7 @@ Multi-agent pipeline (monitor to briefing), structured logging, multimodal input
 | Analyst Agent | `gemini-2.5-pro` | Root cause reasoning benefits from deeper thinking |
 | Briefing Agent | `gemini-2.5-pro` | Long-form executive prose requires strong instruction following |
 
-> **Free tier is sufficient for demos.** If you hit a `429` rate limit, set `GEMINI_FLASH_MODEL=gemini-1.5-flash` and `GEMINI_PRO_MODEL=gemini-1.5-pro` in your `.env` — both are free tier.
+> **Free tier is sufficient for demos.** If you hit a `429` rate limit, set `GEMINI_FLASH_MODEL=gemini-1.5-flash` and `GEMINI_PRO_MODEL=gemini-1.5-pro` in your `.env` as both are free tier.
 
 ---
 
