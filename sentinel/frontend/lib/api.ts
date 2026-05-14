@@ -48,9 +48,15 @@ async function readErrorBody(res: Response): Promise<string> {
 }
 
 async function fetchAPI<T>(path: string, options?: RequestInit): Promise<T> {
+  const method = (options?.method ?? "GET").toUpperCase();
+  const headers = new Headers(options?.headers);
+  // Avoid Content-Type on GET/HEAD so the browser can use a "simple" cross-origin request (no OPTIONS preflight).
+  if (method !== "GET" && method !== "HEAD" && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers,
   });
   if (!res.ok) throw new Error(await readErrorBody(res));
   const text = await res.text();

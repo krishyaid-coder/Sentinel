@@ -45,9 +45,9 @@ for part in settings.cors_extra_origins.split(","):
     if p and p not in _origins:
         _origins.append(p)
 
-# Localhost + any *.vercel.app (production and preview) so Railway does not require exact FRONTEND_URL for Vercel.
+# Localhost + any https://*.vercel.app (production & preview). Starlette returns 400 preflight if origin fails.
 _cors_origin_regex = (
-    r"^https://[a-zA-Z0-9][a-zA-Z0-9.-]*\.vercel\.app$"
+    r"^https://[\w.-]+\.vercel\.app$"
     r"|^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
 )
 
