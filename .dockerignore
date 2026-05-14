@@ -1,0 +1,11 @@
+.git
+**/__pycache__
+**/*.pyc
+**/.venv
+**/venv
+sentinel/frontend/node_modules
+sentinel/frontend/.next
+sentinel/backend/.env
+*.db
+*.sqlite
+*.sqlite3

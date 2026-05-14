@@ -427,19 +427,19 @@ Multi-agent pipeline (monitor to briefing), structured logging, multimodal input
 
 ### Backend → Railway
 
-```bash
-# 1. Push to GitHub
-# 2. New project on railway.app → Deploy from GitHub repo
-# 3. Set root directory to /backend
-# 4. Add environment variables (GEMINI_API_KEY etc.)
-# 5. Railway auto-detects Python → deploys with uvicorn
-```
+This repo’s **GitHub root** is the monorepo folder (`README.md` + `sentinel/`), not `sentinel/backend` alone. Railpack only sees Python if it builds the right tree.
+
+**Option A (simplest):** Leave **Root Directory** empty (repo root). A **`Dockerfile`** at the repo root builds `sentinel/backend` and listens on Railway’s **`PORT`**.
+
+**Option B:** In the Railway service → **Settings** → **Root Directory**, set **`sentinel/backend`**. Then Railpack sees `requirements.txt` and can use native Python detection (or the `Dockerfile` inside that folder).
+
+Then add variables (at minimum **`GEMINI_API_KEY`**, **`FRONTEND_URL`** for CORS, and for production **`DATABASE_URL`** to a Railway Postgres plugin instead of SQLite).
 
 ### Frontend → Vercel
 
 ```bash
 # 1. Import GitHub repo on vercel.com
-# 2. Set root directory to /frontend
+# 2. Set root directory to sentinel/frontend
 # 3. Add NEXT_PUBLIC_API_URL=https://your-railway-backend-url.railway.app
 # 4. Deploy
 ```
