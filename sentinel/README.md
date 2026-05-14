@@ -42,7 +42,7 @@ The Settings API has no login: only use on trusted networks, or add your own aut
 
 ---
 
-## How It Works — 4-Agent Pipeline
+## How It Works: 4-Agent Pipeline
 
 Every upload triggers a sequential, collaborative pipeline. Each agent has a distinct role. **All four steps call Gemini Flash by default** (see [Gemini API usage](#gemini-api-usage) for why Analyst and Briefing would ideally use Pro).
 
@@ -66,7 +66,7 @@ Every upload triggers a sequential, collaborative pipeline. Each agent has a dis
                                │  anomalies detected
                                ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│  2. ANALYST AGENT  ·  Gemini 2.5 Flash (see model note)               │
+│  2. ANALYST AGENT  ·  Gemini 2.5 Flash (see model note)              │
 │                                                                      │
 │  • Runs deep root cause analysis on each anomaly                     │
 │  • Cross-correlates with all other metrics in context                │
