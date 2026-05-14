@@ -40,10 +40,21 @@ _origins = [
     "http://localhost:3000",
     "http://localhost:3001",
 ]
+for part in settings.cors_extra_origins.split(","):
+    p = part.strip().rstrip("/")
+    if p and p not in _origins:
+        _origins.append(p)
+
+# Localhost + any *.vercel.app (production and preview) so Railway does not require exact FRONTEND_URL for Vercel.
+_cors_origin_regex = (
+    r"^https://[a-zA-Z0-9][a-zA-Z0-9.-]*\.vercel\.app$"
+    r"|^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+    allow_origin_regex=_cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

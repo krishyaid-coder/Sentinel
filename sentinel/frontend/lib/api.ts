@@ -1,12 +1,35 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export function getApiErrorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message;
+  if (err instanceof Error) {
+    const m = err.message;
+    if (
+      m === "Load failed" ||
+      m === "Failed to fetch" ||
+      m.includes("NetworkError") ||
+      m.includes("network error")
+    ) {
+      return (
+        `${m}: cannot reach the API. Confirm NEXT_PUBLIC_API_URL is your Railway HTTPS base URL, ` +
+        `redeploy Vercel after changing it, and that the backend is up (open /health in a new tab). ` +
+        `If the backend is up, redeploy Railway after pulling the latest CORS update.`
+      );
+    }
+    return m;
+  }
   return "Something went wrong.";
 }
 
 async function readErrorBody(res: Response): Promise<string> {
   const text = await res.text();
+  const trimmed = text.trimStart();
+  if (trimmed.startsWith("<!") || trimmed.startsWith("<html")) {
+    return (
+      `Got an HTML page instead of JSON (${res.status}). Your app is calling the wrong host: ` +
+      `set Vercel env NEXT_PUBLIC_API_URL to your FastAPI base URL only (e.g. https://your-service.up.railway.app), ` +
+      `then redeploy. Do not use your *.vercel.app URL there.`
+    );
+  }
   try {
     const j = JSON.parse(text) as { detail?: unknown };
     if (j.detail != null) {

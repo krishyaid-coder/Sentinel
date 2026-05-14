@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./sentinel.db"
     environment: str = "development"
     frontend_url: str = "http://localhost:3000"
+    # Optional comma-separated extra CORS origins (e.g. https://www.example.com,https://preview.vercel.app)
+    cors_extra_origins: str = ""
 
     # Monitor + Action agents use Flash; Analyst + Briefing use Pro (see agents/*).
     gemini_flash_model: str = "gemini-2.5-flash"

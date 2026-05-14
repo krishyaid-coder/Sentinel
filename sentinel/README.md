@@ -440,8 +440,9 @@ Then add variables (at minimum **`GEMINI_API_KEY`**, **`FRONTEND_URL`** for CORS
 ```bash
 # 1. Import GitHub repo on vercel.com
 # 2. Set root directory to sentinel/frontend
-# 3. Add NEXT_PUBLIC_API_URL=https://your-railway-backend-url.railway.app
-# 4. Deploy
+# 3. Environment variables → NEXT_PUBLIC_API_URL = https://<your-backend>.up.railway.app
+#    (Railway hostname only — never your *.vercel.app URL)
+# 4. Redeploy after saving (NEXT_PUBLIC_* is inlined at build time)
 ```
 
 ---
