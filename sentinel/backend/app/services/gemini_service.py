@@ -21,7 +21,7 @@ def get_flash_model():
 
 
 def get_pro_model():
-    """Analyst + Briefing agents (Pro tier for deeper reasoning)."""
+    """Model used by Analyst + Briefing (see README: ideally Pro; default Flash for quota)."""
     return genai.GenerativeModel(settings.gemini_pro_model)
 
 
@@ -84,7 +84,7 @@ async def generate_with_flash(prompt: str, image_data: bytes = None, mime_type: 
 
 
 async def generate_with_pro(prompt: str) -> str:
-    """Call Gemini Pro (deep reasoning, long context)."""
+    """Call the configured “pro tier” model (defaults to Flash; override with GEMINI_PRO_MODEL)."""
     model = get_pro_model()
     response = _generate_content(model, prompt)
     return response.text

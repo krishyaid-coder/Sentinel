@@ -2,7 +2,7 @@
 
 **Autonomous AI agents** monitor your business data, spot anomalies, reason about root cause, draft actions, and produce an executive briefing. Upload CSV, Excel, PDF, images, JSON, or pasted text and watch the pipeline run end to end.
 
-Built with **Google Gemini** (Flash + Pro). Open source under the MIT license.
+Built with **Google Gemini** (Flash across agents in this repo; see [model note](#gemini-api-usage)). Open source under the MIT license.
 
 ---
 
@@ -44,7 +44,7 @@ The Settings API has no login: only use on trusted networks, or add your own aut
 
 ## How It Works — 4-Agent Pipeline
 
-Every upload triggers a sequential, collaborative pipeline. Each agent has a distinct role and model:
+Every upload triggers a sequential, collaborative pipeline. Each agent has a distinct role. **All four steps call Gemini Flash by default** (see [Gemini API usage](#gemini-api-usage) for why Analyst and Briefing would ideally use Pro).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -66,7 +66,7 @@ Every upload triggers a sequential, collaborative pipeline. Each agent has a dis
                                │  anomalies detected
                                ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│  2. ANALYST AGENT  ·  Gemini 2.5 Pro                                 │
+│  2. ANALYST AGENT  ·  Gemini 2.5 Flash (see model note)               │
 │                                                                      │
 │  • Runs deep root cause analysis on each anomaly                     │
 │  • Cross-correlates with all other metrics in context                │
@@ -92,7 +92,7 @@ Every upload triggers a sequential, collaborative pipeline. Each agent has a dis
                                │  actions logged
                                ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│  4. BRIEFING AGENT  ·  Gemini 2.5 Pro                                │
+│  4. BRIEFING AGENT  ·  Gemini 2.5 Flash (see model note)             │
 │                                                                      │
 │  • Synthesises all anomalies and actions into one narrative          │
 │  • Writes in the voice of a trusted Chief of Staff                   │
@@ -124,8 +124,7 @@ Every agent step is persisted to the database in real time and streamed to the *
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **AI: fast tier** | Gemini 2.5 Flash | Monitor Agent, Action Agent (low latency) |
-| **AI: reasoning tier** | Gemini 2.5 Pro | Analyst Agent, Briefing Agent (deep reasoning) |
+| **AI (Gemini)** | Gemini 2.5 Flash (all agents by default) | Monitor, Analyst, Action, Briefing — Analyst and Briefing are **normally** better on Pro; this repo defaults to Flash for quota (see [Gemini API usage](#gemini-api-usage)) |
 | **Backend** | Python 3.11 + FastAPI | Async REST API, agent orchestration |
 | **Scheduler** | APScheduler | Periodic background monitoring jobs |
 | **Database** | SQLite + SQLAlchemy (async) | Dev; swap `DATABASE_URL` for PostgreSQL in prod |
@@ -172,13 +171,13 @@ sentinel/
 │   ├── app/
 │   │   ├── agents/
 │   │   │   ├── monitor_agent.py     # Gemini Flash — metric extraction + anomaly detection
-│   │   │   ├── analyst_agent.py     # Gemini Pro  — root cause + cross-correlation
+│   │   │   ├── analyst_agent.py     # Uses “pro” model slot (default: Flash — see README)
 │   │   │   ├── action_agent.py      # Gemini Flash — email/task/escalation drafting
-│   │   │   └── briefing_agent.py    # Gemini Pro  — executive narrative generation
+│   │   │   └── briefing_agent.py    # Uses “pro” model slot (default: Flash — see README)
 │   │   │
 │   │   ├── services/
 │   │   │   ├── pipeline.py          # Orchestrates all 4 agents in sequence
-│   │   │   ├── gemini_service.py    # Flash + Pro wrappers with error handling
+│   │   │   ├── gemini_service.py    # Flash + “pro slot” wrappers (both default to Flash)
 │   │   │   ├── gemini_key.py        # DB-backed API key (overrides env when set)
 │   │   │   └── logger.py            # Persists agent steps to DB in real time
 │   │   │
@@ -246,7 +245,7 @@ sentinel/
 | `GEMINI_API_KEY` | *(optional if you use Settings UI)* | From [Google AI Studio](https://aistudio.google.com/apikey). Used when no key is saved in the database. |
 | `DATABASE_URL` | `sqlite+aiosqlite:///./sentinel.db` | SQLite for dev; use `postgresql+asyncpg://...` for prod |
 | `GEMINI_FLASH_MODEL` | `gemini-2.5-flash` | Model for Monitor + Action agents. Fallback: `gemini-1.5-flash` |
-| `GEMINI_PRO_MODEL` | `gemini-2.5-pro` | Model for Analyst + Briefing agents. Fallback: `gemini-1.5-pro` |
+| `GEMINI_PRO_MODEL` | `gemini-2.5-flash` | Model for Analyst + Briefing (same default as Flash for quota; set `gemini-2.5-pro` when your key has Pro access) |
 | `FRONTEND_URL` | `http://localhost:3000` | Allowed CORS origin |
 | `ENVIRONMENT` | `development` | `development` or `production` |
 | `MONITOR_INTERVAL_SECONDS` | `60` | How often the scheduler re-checks data sources |
@@ -412,14 +411,16 @@ Multi-agent pipeline (monitor to briefing), structured logging, multimodal input
 
 ## Gemini API Usage
 
-| Agent | Model | Why |
-|---|---|---|
-| Monitor Agent | `gemini-2.5-flash` | High-frequency metric extraction needs low latency |
-| Action Agent | `gemini-2.5-flash` | Action drafting is straightforward; speed matters |
-| Analyst Agent | `gemini-2.5-pro` | Root cause reasoning benefits from deeper thinking |
-| Briefing Agent | `gemini-2.5-pro` | Long-form executive prose requires strong instruction following |
+**Analyst** and **Briefing** are the agents that benefit most from **Gemini Pro** (deeper reasoning and stronger long-form prose). Pro often needs **billing or higher quota** than free-tier Flash. **This repository defaults both `GEMINI_FLASH_MODEL` and `GEMINI_PRO_MODEL` to `gemini-2.5-flash`** so everything runs on Flash out of the box. When your API key supports it, set `GEMINI_PRO_MODEL=gemini-2.5-pro` (or `gemini-2.5-pro-latest`) in `backend/.env` or Railway variables and redeploy the backend.
 
-> **Free tier is sufficient for demos.** If you hit a `429` rate limit, set `GEMINI_FLASH_MODEL=gemini-1.5-flash` and `GEMINI_PRO_MODEL=gemini-1.5-pro` in your `.env` as both are free tier.
+| Agent | Default model | Why |
+|---|---|---|
+| Monitor Agent | `gemini-2.5-flash` (`GEMINI_FLASH_MODEL`) | High-frequency metric extraction; low latency |
+| Action Agent | `gemini-2.5-flash` (`GEMINI_FLASH_MODEL`) | Action drafting; speed matters |
+| Analyst Agent | `gemini-2.5-flash` (`GEMINI_PRO_MODEL` default) | **Ideally Pro** for root cause depth; Flash used here for quota |
+| Briefing Agent | `gemini-2.5-flash` (`GEMINI_PRO_MODEL` default) | **Ideally Pro** for executive narrative; Flash used here for quota |
+
+> **Free tier is sufficient for demos.** If you hit a `429` rate limit, set `GEMINI_FLASH_MODEL=gemini-1.5-flash` and `GEMINI_PRO_MODEL=gemini-1.5-flash` (or Pro equivalents your tier allows) in your `.env`.
 
 ---
 

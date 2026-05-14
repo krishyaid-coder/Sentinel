@@ -12,7 +12,8 @@ class Settings(BaseSettings):
 
     # Monitor + Action agents use Flash; Analyst + Briefing use Pro (see agents/*).
     gemini_flash_model: str = "gemini-2.5-flash"
-    gemini_pro_model: str = "gemini-2.5-pro"
+    # Defaults to Flash so Analyst + Briefing run without Pro quota; set to gemini-2.5-pro when available.
+    gemini_pro_model: str = "gemini-2.5-flash"
 
     # Scheduler config (seconds)
     monitor_interval_seconds: int = 60
