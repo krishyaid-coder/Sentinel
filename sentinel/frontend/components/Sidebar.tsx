@@ -21,7 +21,7 @@ const nav = [
   { href: "/actions", label: "Actions", icon: Zap },
   { href: "/briefing", label: "Briefing", icon: FileText },
   { href: "/upload", label: "Upload", icon: Upload },
-  { href: "/logs", label: "Agent logs", icon: Activity },
+  { href: "/logs", label: "Activity logs", icon: Activity },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
