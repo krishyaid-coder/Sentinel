@@ -41,8 +41,8 @@ export default function Sidebar() {
             <Image src="/sentinel-logo.png" alt="Sentinel" width={44} height={44} className="h-full w-full object-cover" priority />
           </span>
           <div>
-            <p className="text-sm font-bold tracking-tight text-white">Sentinel</p>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-500">Situation room</p>
+            <p className="text-sm font-bold tracking-tight text-white">Sentine: Personal Ass</p>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-500">Live situation room</p>
           </div>
         </Link>
       </div>
