@@ -42,7 +42,7 @@ export default function Sidebar() {
           </span>
           <div>
             <p className="text-sm font-bold tracking-tight text-white">Sentine: Personal Ass</p>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-500">Situation room</p>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-500">Live situation room</p>
           </div>
         </Link>
       </div>
